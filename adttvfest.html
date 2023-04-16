@@ -20,7 +20,11 @@
 
       #ad {
         animation: ad 1s;
-        position: relative;
+        /* position: relative; */
+        transform-origin: center;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
 
       #ad img {
@@ -101,10 +105,11 @@
                 '#ad',
                 {
                   opacity: 1,
-                  y: 0,
+                  // y: 0,
                 },
                 {
-                  y: 400,
+                  // y: 400,
+                  scale: 0.5,
                   opacity: 0,
                   display: 'none',
                 },
