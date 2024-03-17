@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TTV Fest - Advertising</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DynaPuff&display=swap" rel="stylesheet" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #ad {
+        animation: ad 1s;
+        /* position: relative; */
+        transform-origin: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      #ad img {
+        width: 350px;
+      }
+
+      #text {
+        position: absolute;
+        font-family: 'DynaPuff', cursive;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 350px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 10px 0;
+        font-size: 20px;
+        text-align: center;
+      }
+
+      @keyframes ad {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ad" style="display: none; opacity: 0">
+      <img src="https://cdn.discordapp.com/attachments/782624831924863027/1218956653936906260/WANTED_6.png?ex=66098cd9&is=65f717d9&hm=5460149380a9fec06d62fc6ee87ec566cc34a1815c81ea65fbe8a68ad6ecb590&" />
+      <!--<div id="text"></div>-->
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search)
+        const spawn = params.get('spawn') || 15
+        const duration = params.get('duration') || 5
+
+        const ad = document.getElementById('ad')
+        const countDownDate = new Date('September 30, 2023 23:59:59').getTime()
+
+        document.body.style.backgroundColor = params.get('screen') || 'transparent'
+
+        const inverfunc = () => {
+          const now = new Date().getTime()
+          const distance = countDownDate - now
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+
+          if (isRoundUp(minutes, spawn)) {
+            gsap.timeline({ defaults: { duration: 1 } })
+
+            gsap.fromTo(
+              '#ad',
+              {
+                opacity: 0,
+                y: -400,
+                opacity: 0,
+                scale: 1,
+                display: 'none',
+              },
+              {
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                display: 'block',
+              },
+            )
+
+            refreshSpan(countDownDate)
+            const textval = setInterval(() => {
+              refreshSpan(countDownDate)
+            }, 1000)
+
+            const disappear = setTimeout(() => {
+              gsap.fromTo(
+                '#ad',
+                {
+                  opacity: 1,
+                  scale: 1,
+                  // y: 0,
+                },
+                {
+                  // y: 400,
+                  scale: 0.5,
+                  opacity: 0,
+                  display: 'none',
+                },
+              )
+              clearTimeout(textval)
+              clearTimeout(disappear)
+            }, 1000 * duration)
+          }
+        }
+
+        const init = setTimeout(() => {
+          inverfunc()
+          setInterval(inverfunc, 1000 * 60)
+          clearTimeout(init)
+        }, 1000)
+      })
+
+      function refreshSpan(countDownDate) {
+        const now = new Date().getTime()
+        const distance = countDownDate - now
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+        //document.getElementById('text').innerHTML = `Pendant ${days}J, ${hours}H, ${minutes}m et ${seconds}s`
+      }
+
+      function roundUp(min, spawn = 5) {
+        return min % spawn ? min - (min % spawn) + spawn : min
+      }
+
+      function isRoundUp(min, spawn = 5) {
+        return roundUp(min, spawn) === min
+      }
+    </script>
+  </body>
+</html>
